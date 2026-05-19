@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+src-tauri/target/
+
+# Tauri generated files
+src-tauri/gen/
+
+# Private signing key — NEVER commit this
+src-tauri/talka-updater.key
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local

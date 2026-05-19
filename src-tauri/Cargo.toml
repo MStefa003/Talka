@@ -1,0 +1,46 @@
+[package]
+name = "talka"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "talka_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri          = { version = "2", features = ["tray-icon", "image-png"] }
+tauri-plugin-global-shortcut = "2"
+tauri-plugin-store = "2"
+tauri-plugin-shell = "2"
+tauri-plugin-updater = "2"
+
+serde       = { version = "1", features = ["derive"] }
+serde_json  = "1"
+
+# Audio
+cpal = "0.15"
+rubato = "0.15"
+
+# Whisper (wraps whisper.cpp — requires cmake + C++ compiler)
+whisper-rs = { version = "0.16", features = [] }
+
+# Text output
+enigo  = "0.2"
+arboard = "3"
+
+# Async
+tokio = { version = "1", features = ["full"] }
+
+# HTTP (model download)
+reqwest = { version = "0.12", features = ["stream"] }
+futures-util = "0.3"
+
+# Utilities
+anyhow      = "1"
+parking_lot = "0.12"
+open        = "5"
+tracing     = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Talka",
+  "version": "0.1.0",
+  "identifier": "com.talka.app",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Talka",
+        "width": 400,
+        "height": 520,
+        "resizable": false,
+        "visible": true,
+        "center": true
+      },
+      {
+        "label": "overlay",
+        "title": "",
+        "width": 220,
+        "height": 48,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "visible": false,
+        "resizable": false,
+        "x": 0,
+        "y": 0
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://github.com/MStefa003/Talka/releases/latest/download/latest.json"
+      ],
+      "dialog": false,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDNBNjM4OENCNEJDRTRENTgKUldSWVRjNUx5NGhqT242aXRqV0Eyb21hNnR5NTZwVWQvOWZHTXkwWkNaSE5ycmhIelhadFNzWk4K"
+    }
+  }
+}

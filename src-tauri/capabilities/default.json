@@ -1,0 +1,22 @@
+{
+  "identifier": "default",
+  "description": "Default permissions for Talka",
+  "windows": ["main", "overlay"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-show",
+    "core:window:allow-hide",
+    "core:window:allow-set-position",
+    "core:window:allow-set-size",
+    "core:tray:allow-set-icon",
+    "core:tray:allow-set-tooltip",
+    "global-shortcut:allow-register",
+    "global-shortcut:allow-unregister",
+    "global-shortcut:allow-is-registered",
+    "shell:allow-open",
+    "store:allow-load",
+    "store:allow-set",
+    "store:allow-get",
+    "store:allow-save"
+  ]
+}

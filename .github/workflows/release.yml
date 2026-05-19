@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust dependencies
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Install LLVM (required for whisper-rs)
+        run: choco install llvm -y
+
+      - name: Install CMake
+        run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+
+      - name: Install frontend dependencies
+        run: npm install
+
+      - name: Build and publish release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          LIBCLANG_PATH: 'C:\Program Files\LLVM\bin'
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'Talka ${{ github.ref_name }}'
+          releaseBody: |
+            ## What's new
+            See commits for changes in this release.
+
+            ## Installation
+            Download and run the `.msi` or `.exe` installer below.
+          releaseDraft: false
+          prerelease: false
+          updaterJsonPreferNsis: true
