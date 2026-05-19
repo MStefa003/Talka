@@ -37,8 +37,11 @@ pub fn run() {
             let shared: SharedState = Arc::new(Mutex::new(AppState::new(config)));
             app.manage(shared.clone());
 
-            // Register global shortcut.
-            register_shortcut(app.handle(), shared.clone())?;
+            // Register global shortcut — non-fatal so a hotkey conflict on
+            // another machine doesn't prevent the app from starting.
+            if let Err(e) = register_shortcut(app.handle(), shared.clone()) {
+                tracing::warn!("Could not register shortcut: {e}");
+            }
 
             // Build system tray.
             build_tray(app)?;

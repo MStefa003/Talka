@@ -127,7 +127,18 @@ pub fn start_recording(app: &AppHandle, shared: &SharedState) {
         let resampled = resample_to_16k(&audio, rate);
 
         // --- Silence gate ---
-        if audio_rms(&resampled) < 0.002 {
+        let rms = audio_rms(&resampled);
+        if rms < 0.0002 {
+            // Essentially all-zeros — microphone is either denied or muted.
+            emit_error(
+                &app,
+                "No audio detected. On Windows go to Settings → Privacy & Security → Microphone and make sure Talka has access.",
+            );
+            set_idle(&app, &shared);
+            return;
+        }
+        if rms < 0.002 {
+            // Just silence — user didn't speak.
             set_idle(&app, &shared);
             return;
         }
