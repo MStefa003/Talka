@@ -102,6 +102,19 @@ export default function SettingsPage() {
             <span style={s.progressLabel}>Downloading model... {progress}%</span>
           </div>
         )}
+        {!anyModelReady && !isDownloading && (
+          <div style={{ ...s.progressWrap, textAlign: "center" as const }}>
+            <span style={{ color: "#888", fontSize: 12, display: "block", marginBottom: 8 }}>
+              Speech model not installed
+            </span>
+            <button
+              onClick={() => local && downloadModel(local.model)}
+              style={{ ...s.keyChip, background: "#FF3B30", color: "#fff", borderColor: "#cc2a20", fontSize: 12 }}
+            >
+              Download now (~150 MB)
+            </button>
+          </div>
+        )}
       </div>
 
       <div style={s.section}>

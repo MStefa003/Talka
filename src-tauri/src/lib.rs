@@ -4,7 +4,7 @@ use parking_lot::Mutex;
 use tauri::{
     menu::{Menu, MenuItem},
     tray::TrayIconBuilder,
-    Manager,
+    Emitter, Manager,
 };
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
 
@@ -57,7 +57,19 @@ pub fn run() {
                     .iter()
                     .any(|m| m.downloaded)
                 {
-                    let _ = commands::do_download("ggml-base".to_string(), &app_handle).await;
+                    if let Err(e) =
+                        commands::do_download("ggml-base".to_string(), &app_handle).await
+                    {
+                        let _ = app_handle.emit(
+                            "talka-error",
+                            serde_json::json!({
+                                "message": format!(
+                                    "Model download failed: {}. Check your internet and click \"Download now\" in Settings.",
+                                    e
+                                )
+                            }),
+                        );
+                    }
                 }
             });
 
@@ -71,6 +83,15 @@ pub fn run() {
             commands::download_model,
             commands::open_models_dir,
         ])
+        .on_window_event(|window, event| {
+            // Clicking X on the main settings window quits the whole app
+            // (including the tray icon).
+            if let tauri::WindowEvent::CloseRequested { .. } = event {
+                if window.label() == "main" {
+                    window.app_handle().exit(0);
+                }
+            }
+        })
         .run(tauri::generate_context!())
         .expect("error while running Tauri application");
 }
