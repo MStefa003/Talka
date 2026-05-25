@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect, useCallback } from "react";
 import { check as checkUpdate } from "@tauri-apps/plugin-updater";
+import { open as shellOpen } from "@tauri-apps/plugin-shell";
 import { useAppState, useConfig } from "../hooks/useAppState";
 import type { AppConfig } from "../types";
 
@@ -21,7 +22,8 @@ const STATUS_COLORS: Record<string, { dot: string; text: string }> = {
 
 export default function SettingsPage() {
   const { status, lastText, error } = useAppState();
-  const { config, models, downloadProgress, saveConfig, downloadModel } = useConfig();
+  const { config, models, devices, downloadProgress, saveConfig, downloadModel } = useConfig();
+  const noMicAccess = devices.length === 0;
   const [local, setLocal] = useState<AppConfig | null>(null);
   const [capturing, setCapturing] = useState(false);
   const [updateInfo, setUpdateInfo] = useState<{ version: string } | null>(null);
@@ -82,6 +84,20 @@ export default function SettingsPage() {
     <div style={s.root}>
       <div style={s.header}>
         <img src="/logo.png" alt="Talka" style={s.logo} />
+        {noMicAccess && (
+          <div style={s.micWarning}>
+            <span style={{ fontSize: 13, color: "#ff9500", fontWeight: 600 }}>⚠ Microphone access blocked</span>
+            <span style={{ fontSize: 11, color: "#888", marginTop: 3 }}>
+              Allow microphone access in Windows Settings.
+            </span>
+            <button
+              onClick={() => shellOpen("ms-settings:privacy-microphone")}
+              style={{ ...s.keyChip, marginTop: 8, background: "#ff9500", color: "#000", borderColor: "#cc7800", fontSize: 11 }}
+            >
+              Open Microphone Settings
+            </button>
+          </div>
+        )}
         <div style={s.statusRow}>
           <span
             style={{
@@ -380,6 +396,7 @@ const s = {
   statusDot: { width: 7, height: 7, borderRadius: "50%", flexShrink: 0, transition: "background 0.3s, box-shadow 0.3s" },
   statusText: { fontSize: 12, fontWeight: 500, transition: "color 0.3s" },
   progressWrap: { marginTop: 14, width: "100%", maxWidth: 220 },
+  micWarning: { marginTop: 14, width: "100%", maxWidth: 260, background: "#1a1400", border: "1px solid #3d2e00", borderRadius: 10, padding: "12px 14px", display: "flex", flexDirection: "column" as const, alignItems: "center", textAlign: "center" as const, gap: 0 },
   progressBar: { height: 2, background: "#1e1e1e", borderRadius: 2, overflow: "hidden", marginBottom: 5 },
   progressFill: { height: "100%", background: "#FF3B30", borderRadius: 2, transition: "width 0.4s" },
   progressLabel: { display: "block", fontSize: 11, color: "#444", textAlign: "center" as const },
